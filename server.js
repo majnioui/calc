@@ -1,26 +1,15 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const branchLocator = require('./branch-locator');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Configure CORS
-app.use(cors({
-    origin: ['https://test.majnioui.me', 'http://localhost:3000'],
-    methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type'],
-    credentials: true
-}));
-
+app.use(cors());
 app.use(express.json());
 
 // Serve static files from the current directory
 app.use(express.static(__dirname));
-
-// Include branch locator routes
-app.use('/api', branchLocator);
 
 // Calculate monthly payment
 function calculateMonthlyPayment(loanAmount, annualInterestRate, loanTerm) {
