@@ -1,11 +1,15 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+
+// Serve static files from the current directory
+app.use(express.static(__dirname));
 
 // Calculate monthly payment
 function calculateMonthlyPayment(loanAmount, annualInterestRate, loanTerm) {
