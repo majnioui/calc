@@ -22,7 +22,7 @@ function requestLocationPermission() {
 // Function to find nearest branches
 async function findNearestBranches(latitude, longitude) {
     try {
-        const response = await fetch('http://localhost:3000/api/find-branches', {
+        const response = await fetch('/api/find-branches', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -30,8 +30,12 @@ async function findNearestBranches(latitude, longitude) {
             body: JSON.stringify({ latitude, longitude }),
         });
 
+        if (!response.ok) {
+            throw new Error('Failed to fetch branches');
+        }
+
         const data = await response.json();
-        return data.branches;
+        return data;
     } catch (error) {
         console.error('Error finding branches:', error);
         throw error;
@@ -39,7 +43,7 @@ async function findNearestBranches(latitude, longitude) {
 }
 
 // Function to create a map with markers
-function createMapWithMarkers(branches, userLocation) {
+function createMapWithMarkers(branch, userLocation) {
     const mapDiv = document.createElement('div');
     mapDiv.style.height = '400px';
     mapDiv.style.width = '100%';
@@ -60,13 +64,11 @@ function createMapWithMarkers(branches, userLocation) {
         }
     });
 
-    // Add branch markers
-    branches.forEach(branch => {
-        new google.maps.Marker({
-            position: { lat: branch.lat, lng: branch.lng },
-            map: map,
-            title: branch.name
-        });
+    // Add branch marker
+    new google.maps.Marker({
+        position: { lat: branch.lat, lng: branch.lng },
+        map: map,
+        title: branch.name
     });
 
     return mapDiv;

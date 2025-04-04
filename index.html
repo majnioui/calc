@@ -25,14 +25,16 @@
         instance.on({ type: 'location:request', handler: async (event) => {
           try {
             const location = await window.locationHandler.requestLocationPermission();
-            const branches = await window.locationHandler.findNearestBranches(location.latitude, location.longitude);
-            const mapElement = window.locationHandler.createMapWithMarkers(branches, location);
+            const response = await window.locationHandler.findNearestBranches(location.latitude, location.longitude);
+            const mapElement = window.locationHandler.createMapWithMarkers(response.branch, location);
 
             // Send the map and branch information back to the assistant
             instance.send({
               type: 'location:response',
               location: location,
-              branches: branches,
+              branch: response.branch,
+              message: response.message,
+              maps_url: response.maps_url,
               mapElement: mapElement
             });
           } catch (error) {
