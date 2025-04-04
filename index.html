@@ -10,39 +10,15 @@
     p { color: #555; }
   </style>
   <!-- Add Google Maps API -->
-
+  <script src="https://maps.googleapis.com/maps/api/js?key=&callback=initMap"></script>
+  <!-- Add location handler -->
+  <script src="location-handler.js"></script>
   <script>
     window.watsonAssistantChatOptions = {
       integrationID: "2a862981-67b9-457f-90ec-84a650503606",
       region: "us-south",
       serviceInstanceID: "9d42087b-ceb3-4de2-b3f0-c27f55e20c58",
-      onLoad: async (instance) => {
-        await instance.render();
-
-        // Add custom handler for location requests
-        instance.on({ type: 'location:request', handler: async (event) => {
-          try {
-            const location = await window.locationHandler.requestLocationPermission();
-            const response = await window.locationHandler.findNearestBranches(location.latitude, location.longitude);
-            const mapElement = window.locationHandler.createMapWithMarkers(response.branch, location);
-
-            // Send the map and branch information back to the assistant
-            instance.send({
-              type: 'location:response',
-              location: location,
-              branch: response.branch,
-              message: response.message,
-              maps_url: response.maps_url,
-              mapElement: mapElement
-            });
-          } catch (error) {
-            instance.send({
-              type: 'location:error',
-              error: error.message
-            });
-          }
-        }});
-      }
+      onLoad: async (instance) => { await instance.render(); }
     };
     setTimeout(function(){
       const t=document.createElement('script');
