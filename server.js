@@ -6,7 +6,14 @@ const branchLocator = require('./branch-locator');
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors());
+// Configure CORS
+app.use(cors({
+    origin: ['https://test.majnioui.me', 'http://localhost:3000'],
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type'],
+    credentials: true
+}));
+
 app.use(express.json());
 
 // Serve static files from the current directory

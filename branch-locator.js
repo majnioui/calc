@@ -9,7 +9,7 @@ async function findNearestBranch(latitude, longitude) {
         const response = await axios.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json', {
             params: {
                 location: `${latitude},${longitude}`,
-                radius: 2000,
+                radius: 5000, // Search within 5km radius
                 keyword: 'Wafasalaf',
                 key: process.env.GOOGLE_MAPS_API_KEY
             }
@@ -87,6 +87,7 @@ router.post('/find-branches', async (req, res) => {
 
         res.json(response);
     } catch (error) {
+        console.error('Error in find-branches endpoint:', error);
         res.status(500).json({
             error: 'An error occurred while finding the nearest branch'
         });

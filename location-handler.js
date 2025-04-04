@@ -22,7 +22,7 @@ function requestLocationPermission() {
 // Function to find nearest branches
 async function findNearestBranches(latitude, longitude) {
     try {
-        const response = await fetch('/api/find-branches', {
+        const response = await fetch('https://test.majnioui.me/api/find-branches', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
