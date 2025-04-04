@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service Status</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+    h1 { color: #4CAF50; }
+    p { color: #555; }
+  </style>
+  <script>
+    window.watsonAssistantChatOptions = {
+      integrationID: "2a862981-67b9-457f-90ec-84a650503606",
+      region: "us-south",
+      serviceInstanceID: "9d42087b-ceb3-4de2-b3f0-c27f55e20c58",
+      onLoad: async (instance) => { await instance.render(); }
+    };
+    setTimeout(function(){
+      const t=document.createElement('script');
+      t.src="https://web-chat.global.assistant.watson.appdomain.cloud/versions/" + (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js";
+      document.head.appendChild(t);
+    });
+  </script>
+</head>
+<body>
+  <h1>✅ Calc testing!</h1>
+</body>
+</html>

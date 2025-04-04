@@ -7,7 +7,7 @@
     },
     "servers": [
         {
-            "url": "http://bot.majnioui.me",
+            "url": "http://test.majnioui.me",
             "description": "Local development server"
         }
     ],
