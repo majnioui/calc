@@ -3,40 +3,169 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Simulateur de Prêt</title>
+  <title>WafaSalaf - Simulateur de Prêt</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-  <h1>Simulateur de Prêt</h1>
-  <p>
-    Utilisez notre simulateur pour calculer vos mensualités de prêt.
-    Vous pouvez également interagir avec notre assistant virtuel.
-  </p>
-
-  <div class="simulator">
-    <div class="form-group">
-      <label for="loan-amount">Montant du prêt (€)</label>
-      <input id="loan-amount" type="number" placeholder="Entrez le montant du prêt">
+  <header>
+    <div class="logo-container">
+      <img src="https://i.ibb.co/1GmMP33k/wafasalaf-2x.png" alt="WafaSalaf Logo" class="logo">
     </div>
-
-    <div class="form-group">
-      <label for="loan-duration">Durée (en années)</label>
-      <input id="loan-duration" type="number" placeholder="Entrez la durée du prêt" value="5">
+    <nav>
+      <ul>
+        <li><a href="#" class="active">Accueil</a></li>
+        <li><a href="#">Nos Prêts</a></li>
+        <li><a href="#">Services</a></li>
+        <li><a href="#">À propos</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="auth-buttons">
+      <button class="btn btn-outline">Se connecter</button>
+      <button class="btn btn-primary">Ouvrir un compte</button>
     </div>
+  </header>
 
-    <div class="form-group">
-      <label for="interest-rate">Taux d'intérêt (%)</label>
-      <input id="interest-rate" type="number" step="0.01" placeholder="Entrez le taux d'intérêt" value="3.5">
-    </div>
-
-    <button id="calculate-btn" onclick="calculateLoan()">Calculer</button>
-
-    <div id="result" class="result">
-      <h3>Résultat de la simulation</h3>
-      <p>Mensualité: <span id="monthly-payment"></span> €</p>
-      <p>Coût total du crédit: <span id="total-cost"></span> €</p>
+  <div class="hero">
+    <div class="hero-content">
+      <h1>Simplifiez vos projets avec un crédit adapté</h1>
+      <p>Des solutions de financement personnalisées pour tous vos besoins</p>
+      <button class="btn btn-secondary">Découvrir nos offres</button>
     </div>
   </div>
+
+  <div class="main-container">
+    <div class="simulator-section">
+      <div class="section-header">
+        <h2>Simulateur de Prêt</h2>
+        <p>Calculez vos mensualités en quelques clics</p>
+      </div>
+
+      <div class="simulator-container">
+        <div class="simulator">
+          <div class="form-group">
+            <label for="loan-amount">Montant du prêt (€)</label>
+            <input id="loan-amount" type="number" placeholder="Entrez le montant du prêt">
+          </div>
+
+          <div class="form-group">
+            <label for="loan-duration">Durée (en années)</label>
+            <input id="loan-duration" type="number" placeholder="Entrez la durée du prêt" value="5">
+          </div>
+
+          <div class="form-group">
+            <label for="interest-rate">Taux d'intérêt (%)</label>
+            <input id="interest-rate" type="number" step="0.01" placeholder="Entrez le taux d'intérêt" value="3.5">
+          </div>
+
+          <button id="calculate-btn" onclick="calculateLoan()">Calculer mes mensualités</button>
+
+          <div id="result" class="result">
+            <h3>Résultat de la simulation</h3>
+            <p>Mensualité: <span id="monthly-payment"></span> €</p>
+            <p>Coût total du crédit: <span id="total-cost"></span> €</p>
+            <button class="btn btn-primary">Faire une demande</button>
+          </div>
+        </div>
+
+        <div class="simulator-info">
+          <div class="info-card">
+            <i class="fas fa-shield-alt"></i>
+            <h3>Sécurisé</h3>
+            <p>Vos données sont protégées avec les normes de sécurité les plus élevées</p>
+          </div>
+          <div class="info-card">
+            <i class="fas fa-bolt"></i>
+            <h3>Rapide</h3>
+            <p>Obtenez une réponse de principe en quelques minutes</p>
+          </div>
+          <div class="info-card">
+            <i class="fas fa-check-circle"></i>
+            <h3>Sans engagement</h3>
+            <p>La simulation ne vous engage à rien</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="features-section">
+      <div class="section-header">
+        <h2>Nos services bancaires</h2>
+        <p>Des solutions adaptées à tous vos besoins</p>
+      </div>
+
+      <div class="features-container">
+        <div class="feature-card">
+          <i class="fas fa-home"></i>
+          <h3>Crédit Immobilier</h3>
+          <p>Financement pour l'achat de votre résidence principale ou investissement locatif</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-car"></i>
+          <h3>Prêt Auto</h3>
+          <p>Solutions avantageuses pour l'achat de votre véhicule neuf ou d'occasion</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-graduation-cap"></i>
+          <h3>Crédit Études</h3>
+          <p>Accompagnement financier pour la réussite de vos projets d'études</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-briefcase"></i>
+          <h3>Prêt Professionnel</h3>
+          <p>Financement adapté aux besoins des entrepreneurs et professionnels</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-logo">
+        <img src="https://i.ibb.co/1GmMP33k/wafasalaf-2x.png" alt="WafaSalaf Logo" class="logo-small">
+        <p>Votre partenaire financier de confiance</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-column">
+          <h4>Produits</h4>
+          <ul>
+            <li><a href="#">Crédit immobilier</a></li>
+            <li><a href="#">Prêt personnel</a></li>
+            <li><a href="#">Crédit auto</a></li>
+            <li><a href="#">Épargne</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>À propos</h4>
+          <ul>
+            <li><a href="#">Notre histoire</a></li>
+            <li><a href="#">Carrières</a></li>
+            <li><a href="#">Actualités</a></li>
+            <li><a href="#">Responsabilité sociale</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">Agences</a></li>
+            <li><a href="#">Réclamations</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2023 WafaSalaf. Tous droits réservés.</p>
+      <div class="social-icons">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+    </div>
+  </footer>
 
   <!-- Include the external JavaScript file -->
   <script src="scripts.js"></script>
