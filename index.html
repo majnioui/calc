@@ -107,19 +107,32 @@
       console.log("Received message:", JSON.stringify(event.data));
 
       if (!event.data || !event.data.output || !event.data.output.generic) {
+        console.log("Invalid message structure");
         return;
       }
 
       const generic = event.data.output.generic;
 
       for (let i = 0; i < generic.length; i++) {
-        // Check if this is a text response with user_defined data
-        if (generic[i].response_type === "text" && generic[i].user_defined) {
-          if (generic[i].user_defined.user_defined_type === "fill_loan_amount") {
-            const amount = generic[i].user_defined.amount;
-            console.log("Filling loan amount:", amount);
-            document.getElementById('loan-amount').value = amount;
+        console.log("Response item:", generic[i]);
+
+        // Check if this response has user_defined data
+        if (generic[i].user_defined && generic[i].user_defined.user_defined_type === "fill_loan_amount") {
+          let amount = generic[i].user_defined.amount;
+
+          // Extract the number from the text if needed
+          if (typeof amount === 'string' && amount.includes("$step_001")) {
+            // Try to get the amount from the text property instead
+            const text = generic[i].text || "";
+            const matches = text.match(/avec la valeur (\d+)/);
+            if (matches && matches.length > 1) {
+              amount = matches[1];
+              console.log("Extracted amount from text:", amount);
+            }
           }
+
+          console.log("Setting loan amount to:", amount);
+          document.getElementById('loan-amount').value = amount;
         }
       }
     }
