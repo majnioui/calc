@@ -104,14 +104,21 @@
      * containing an instruction to fill the loan amount
      */
     function receiveHandler(event) {
-      const message = event.data;
-      if (message.output && message.output.generic) {
-        const generic = message.output.generic;
+      console.log("Received message:", JSON.stringify(event.data));
 
-        for (let i = 0; i < generic.length; i++) {
-          if (generic[i].user_defined && generic[i].user_defined.user_defined_type === 'fill_loan_amount') {
-            // Fill in the loan amount with the provided value
-            document.getElementById('loan-amount').value = generic[i].user_defined.amount || '';
+      if (!event.data || !event.data.output || !event.data.output.generic) {
+        return;
+      }
+
+      const generic = event.data.output.generic;
+
+      for (let i = 0; i < generic.length; i++) {
+        // Check if this is a text response with user_defined data
+        if (generic[i].response_type === "text" && generic[i].user_defined) {
+          if (generic[i].user_defined.user_defined_type === "fill_loan_amount") {
+            const amount = generic[i].user_defined.amount;
+            console.log("Filling loan amount:", amount);
+            document.getElementById('loan-amount').value = amount;
           }
         }
       }
@@ -121,6 +128,11 @@
      * This is the function that is called when the web chat code has been loaded and ready to render
      */
     async function onLoad(instance) {
+      // Enable verbose logging to see what's happening
+      instance.updateChatSettings({
+        debug: true
+      });
+
       // Listen for the receive event to handle messages from the assistant
       instance.on({ type: 'receive', handler: receiveHandler });
 
