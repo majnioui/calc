@@ -63,46 +63,68 @@
 
   <script>
     /**
-     * Cette fonction est appelée lorsqu'une réponse personnalisée doit être rendue dans le chat web.
-     * Nous l'utiliserons pour afficher un bouton personnalisé qui, lorsqu'il est cliqué, remplira le champ du montant du prêt.
+     * Cette fonction est appelée lorsqu'une réponse définie par l'utilisateur est reçue.
      */
-    function loanAmountResponseHandler(event) {
-      const { element, message } = event.data;
+    function userDefinedResponseHandler(event, instance) {
+      const { message, element } = event.data;
 
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.innerHTML = 'Remplir le montant du prêt';
-      button.addEventListener('click', () => {
-        // Get the input text from the message
-        const inputText = message.input ? message.input.text : '';
-        if (inputText) {
-          document.querySelector('#loan-amount').value = inputText;
-        }
-      });
+      // Vérifie si c'est notre type de réponse personnalisée
+      if (message.user_defined?.user_defined_type === 'fill_loan_amount') {
+        // Crée un bouton pour remplir le montant du prêt
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.innerHTML = 'Remplir le montant du prêt';
+        button.classList.add('ibm-web-chat--default-styles');
 
-      element.appendChild(button);
+        // Ajoute un gestionnaire de clic au bouton
+        button.addEventListener('click', () => {
+          // Récupère le montant du prêt du contexte de l'assistant
+          const loanAmount = event.data.fullMessage.context?.skills?.['actions skill']?.skill_variables?.loan_amount;
+          if (loanAmount) {
+            document.querySelector('#loan-amount').value = loanAmount;
+          }
+        });
+
+        element.appendChild(button);
+      }
     }
 
     /**
-     * Cette fonction est appelée lorsque le code du chat web a été chargé et qu'il est prêt à être rendu.
+     * Cette fonction est appelée lorsqu'une réponse est reçue de l'assistant.
+     */
+    function receiveHandler(event) {
+      const message = event.data;
+      console.log('Message reçu:', message);
+
+      // Vérifie si la réponse contient un montant de prêt
+      if (message.output?.generic?.[0]?.user_defined?.user_defined_type === 'fill_loan_amount') {
+        const loanAmount = message.context?.skills?.['actions skill']?.skill_variables?.loan_amount;
+        if (loanAmount) {
+          document.querySelector('#loan-amount').value = loanAmount;
+        }
+      }
+    }
+
+    /**
+     * Cette fonction est appelée lorsque le chat web est chargé et prêt à être rendu.
      */
     async function onLoad(instance) {
-      // Écoute l'événement customResponse qui nous permettra de créer du contenu pour la réponse personnalisée
-      // lorsqu'une est reçue.
+      // Écoute l'événement userDefinedResponse
       instance.on({
-        type: 'customResponse',
-        handler: (event, instance) => {
-          const { message } = event.data;
-          if (message.user_defined && message.user_defined.user_defined_type === 'fill_loan_amount') {
-            loanAmountResponseHandler(event);
-          }
-        },
+        type: 'userDefinedResponse',
+        handler: userDefinedResponseHandler
+      });
+
+      // Écoute l'événement receive
+      instance.on({
+        type: 'receive',
+        handler: receiveHandler
       });
 
       await instance.render();
     }
 
-    // Il s'agit de l'objet de configuration standard du chat web.
+    // Configuration du chat web
     window.watsonAssistantChatOptions = {
       integrationID: "2cbbd706-f711-41d6-bd81-83eee378f8ba",
       region: "au-syd",
