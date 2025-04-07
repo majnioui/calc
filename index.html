@@ -50,54 +50,56 @@
     </div>
   </div>
 
-  <!-- Default chat embedding code -->
   <script>
+    /**
+     * This function is called whenever web chat receives a response from the assistant.
+     * It will look to see if the response includes a user-defined value that indicates
+     * the assistant wants to fill the loan amount.
+     */
+    function receiveHandler(event) {
+      console.log('Received message:', event.data);
+
+      event.data.output?.generic?.forEach(item => {
+        // If the response includes a "fill_loan_amount" item, then update the input field
+        if (item.user_defined && item.user_defined.user_defined_type === 'fill_loan_amount') {
+          const loanAmount = event.data.context?.skills?.['actions skill']?.skill_variables?.loan_amount;
+          console.log('Loan amount from context:', loanAmount);
+
+          if (loanAmount) {
+            const inputField = document.querySelector('#loan-amount');
+            if (inputField) {
+              inputField.value = loanAmount;
+              console.log('Set loan amount to:', loanAmount);
+            } else {
+              console.error('Loan amount input field not found');
+            }
+          } else {
+            console.error('No loan amount found in context');
+          }
+        }
+      });
+    }
+
+    /**
+     * This is the function that is called when the web chat code has been loaded and it is ready to be rendered.
+     */
+    async function onLoad(instance) {
+      console.log('Chat instance loaded');
+
+      // Listen for the receive event to handle user-defined responses
+      instance.on({ type: 'receive', handler: receiveHandler });
+
+      await instance.render();
+      console.log('Chat rendered');
+    }
+
+    // Web chat configuration
     window.watsonAssistantChatOptions = {
       integrationID: "2cbbd706-f711-41d6-bd81-83eee378f8ba",
       region: "au-syd",
       serviceInstanceID: "02cff0bf-6880-413a-a103-7e26e50ff214",
-      onLoad: async (instance) => {
-        console.log('Chat instance loaded');
-
-        // Add event listener for userDefinedResponse
-        instance.on({
-          type: 'userDefinedResponse',
-          handler: (event) => {
-            const { message, fullMessage } = event.data;
-            console.log('Received userDefinedResponse:', message);
-
-            // Check if this is our loan amount response
-            if (message.user_defined?.user_defined_type === 'fill_loan_amount') {
-              console.log('Found fill_loan_amount response');
-              const loanAmount = fullMessage.context?.skills?.['actions skill']?.skill_variables?.loan_amount;
-              console.log('Loan amount from context:', loanAmount);
-
-              if (loanAmount) {
-                const inputField = document.querySelector('#loan-amount');
-                if (inputField) {
-                  inputField.value = loanAmount;
-                  console.log('Set loan amount to:', loanAmount);
-                } else {
-                  console.error('Loan amount input field not found');
-                }
-              } else {
-                console.error('No loan amount found in context');
-              }
-            }
-          }
-        });
-
-        // Add event listener for receive to log all messages
-        instance.on({
-          type: 'receive',
-          handler: (event) => {
-            console.log('Received message:', event.data);
-          }
-        });
-
-        await instance.render();
-        console.log('Chat rendered');
-      }
+      onLoad: onLoad,
+      debug: true
     };
 
     // Load the chat script
