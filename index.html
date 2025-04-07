@@ -56,7 +56,25 @@
       integrationID: "2cbbd706-f711-41d6-bd81-83eee378f8ba", // The ID of this integration.
       region: "au-syd", // The region your integration is hosted in.
       serviceInstanceID: "02cff0bf-6880-413a-a103-7e26e50ff214", // The ID of your service instance.
-      onLoad: async (instance) => { await instance.render(); }
+      onLoad: async (instance) => {
+        // Add event listener for receiving messages
+        instance.on({
+          type: 'receive',
+          handler: (event) => {
+            const message = event.data;
+            console.log('Message reçu:', message);
+
+            // Check if the response contains a loan amount
+            if (message.output?.generic?.[0]?.user_defined?.user_defined_type === 'fill_loan_amount') {
+              const loanAmount = message.context?.skills?.['actions skill']?.skill_variables?.loan_amount;
+              if (loanAmount) {
+                document.querySelector('#loan-amount').value = loanAmount;
+              }
+            }
+          }
+        });
+        await instance.render();
+      }
     };
     setTimeout(function(){
       const t=document.createElement('script');
