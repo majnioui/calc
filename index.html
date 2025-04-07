@@ -1,29 +1,119 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Service Status</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simulateur de Crédit - IBM watsonx Assistant</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
-    h1 { color: #4CAF50; }
-    p { color: #555; }
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .simulator-form {
+      background: #f5f5f5;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .ibm-web-chat--default-styles button {
+      background-color: #0f62fe;
+      color: white;
+      font-size: 14px;
+      height: 32px;
+      padding: 0 16px;
+      border-radius: 16px;
+      border: none;
+      cursor: pointer;
+      margin-top: 10px;
+    }
   </style>
+</head>
+<body>
+  <h1>Simulateur de Crédit</h1>
+
+  <p>
+    Entrez vos informations (ou demandez à l'assistant de le faire pour vous) :
+  </p>
+  <p>
+    Envoyez le message "Calculer mon paiement de prêt" au chat pour commencer.
+  </p>
+
+  <div class="simulator-form">
+    <div class="form-group">
+      <label for="loan-amount">Montant du prêt (€)</label>
+      <input type="number" id="loan-amount" placeholder="Entrez le montant du prêt">
+    </div>
+  </div>
+
   <script>
+    /**
+     * Cette fonction est appelée lorsqu'une réponse personnalisée doit être rendue dans le chat web.
+     * Nous l'utiliserons pour afficher un bouton personnalisé qui, lorsqu'il est cliqué, remplira le champ du montant du prêt.
+     */
+    function loanAmountResponseHandler(event) {
+      const { element } = event.data;
+
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.innerHTML = 'Remplir le montant du prêt';
+      button.addEventListener('click', () => {
+        // Recherche l'élément du montant du prêt dans le document et remplit le montant du prêt.
+        document.querySelector('#loan-amount').value = '10000';
+      });
+
+      element.appendChild(button);
+    }
+
+    /**
+     * Cette fonction est appelée lorsque le code du chat web a été chargé et qu'il est prêt à être rendu.
+     */
+    async function onLoad(instance) {
+      // Écoute l'événement customResponse qui nous permettra de créer du contenu pour la réponse personnalisée
+      // lorsqu'une est reçue.
+      instance.on({
+        type: 'customResponse',
+        handler: (event, instance) => {
+          const { message } = event.data;
+          if (message.user_defined && message.user_defined.user_defined_type === 'fill_loan_amount') {
+            loanAmountResponseHandler(event, instance);
+          }
+        },
+      });
+
+      await instance.render();
+    }
+
+    // Il s'agit de l'objet de configuration standard du chat web.
     window.watsonAssistantChatOptions = {
       integrationID: "2cbbd706-f711-41d6-bd81-83eee378f8ba",
       region: "au-syd",
       serviceInstanceID: "02cff0bf-6880-413a-a103-7e26e50ff214",
-      onLoad: async (instance) => { await instance.render(); }
+      debug: true,
+      onLoad: onLoad,
     };
     setTimeout(function(){
       const t=document.createElement('script');
-      t.src="https://web-chat.global.assistant.watson.appdomain.cloud/versions/" + (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js";
+      t.src="https://web-chat.global.assistant.watson.appdomain.cloud/versions/" +
+             (window.watsonAssistantChatOptions.clientVersion || 'latest') +
+             "/WatsonAssistantChatEntry.js";
       document.head.appendChild(t);
     });
   </script>
-</head>
-<body>
-  <h1>✅ Calc testing!</h1>
 </body>
 </html>
