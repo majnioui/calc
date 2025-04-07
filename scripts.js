@@ -55,18 +55,13 @@ function scrollToElement(element) {
  * containing an instruction to fill the loan amount
  */
 function receiveHandler(event) {
-  console.log("Received message:", JSON.stringify(event.data));
-
   if (!event.data || !event.data.output || !event.data.output.generic) {
-    console.log("Invalid message structure");
     return;
   }
 
   const generic = event.data.output.generic;
 
   for (let i = 0; i < generic.length; i++) {
-    console.log("Response item:", generic[i]);
-
     // Check if this response has user_defined data
     if (generic[i].user_defined && generic[i].user_defined.user_defined_type === "fill_loan_amount") {
       let amount = generic[i].user_defined.amount;
@@ -78,7 +73,6 @@ function receiveHandler(event) {
         const matches = text.match(/avec la valeur (\d+)/);
         if (matches && matches.length > 1) {
           amount = matches[1];
-          console.log("Extracted amount from text:", amount);
         }
       }
 
@@ -86,7 +80,6 @@ function receiveHandler(event) {
       const loanAmountInput = document.getElementById('loan-amount');
       const calculateBtn = document.getElementById('calculate-btn');
 
-      console.log("Setting loan amount to:", amount);
       loanAmountInput.value = amount;
 
       // Apply the highlight animation to the input
