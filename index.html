@@ -31,7 +31,7 @@
       border: 1px solid #ddd;
       border-radius: 4px;
     }
-    .ibm-web-chat--default-styles button {
+    #WACContainer.WACContainer .ibm-web-chat--default-styles button {
       background-color: #0f62fe;
       color: white;
       font-size: 14px;
@@ -65,11 +65,14 @@
     /**
      * Cette fonction est appelée lorsqu'une réponse définie par l'utilisateur est reçue.
      */
-    function userDefinedResponseHandler(event, instance) {
-      const { message, element } = event.data;
+    function userDefinedResponseHandler(event) {
+      const { message, fullMessage, element } = event.data;
 
       // Vérifie si c'est notre type de réponse personnalisée
       if (message.user_defined?.user_defined_type === 'fill_loan_amount') {
+        // Récupère le montant du prêt du contexte de l'assistant
+        const loanAmount = fullMessage.context?.skills?.['actions skill']?.skill_variables?.loan_amount;
+
         // Crée un bouton pour remplir le montant du prêt
         const button = document.createElement('button');
         button.type = 'button';
@@ -78,8 +81,6 @@
 
         // Ajoute un gestionnaire de clic au bouton
         button.addEventListener('click', () => {
-          // Récupère le montant du prêt du contexte de l'assistant
-          const loanAmount = event.data.fullMessage.context?.skills?.['actions skill']?.skill_variables?.loan_amount;
           if (loanAmount) {
             document.querySelector('#loan-amount').value = loanAmount;
           }
