@@ -67,14 +67,17 @@
      * Nous l'utiliserons pour afficher un bouton personnalisé qui, lorsqu'il est cliqué, remplira le champ du montant du prêt.
      */
     function loanAmountResponseHandler(event) {
-      const { element } = event.data;
+      const { element, message } = event.data;
 
       const button = document.createElement('button');
       button.type = 'button';
       button.innerHTML = 'Remplir le montant du prêt';
       button.addEventListener('click', () => {
-        // Recherche l'élément du montant du prêt dans le document et remplit le montant du prêt.
-        document.querySelector('#loan-amount').value = '10000';
+        // Get the input text from the message
+        const inputText = message.input ? message.input.text : '';
+        if (inputText) {
+          document.querySelector('#loan-amount').value = inputText;
+        }
       });
 
       element.appendChild(button);
@@ -91,7 +94,7 @@
         handler: (event, instance) => {
           const { message } = event.data;
           if (message.user_defined && message.user_defined.user_defined_type === 'fill_loan_amount') {
-            loanAmountResponseHandler(event, instance);
+            loanAmountResponseHandler(event);
           }
         },
       });
