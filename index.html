@@ -59,17 +59,17 @@
       onLoad: async (instance) => {
         console.log('Chat instance loaded');
 
-        // Add event listener for receiving messages
+        // Add event listener for userDefinedResponse
         instance.on({
-          type: 'receive',
+          type: 'userDefinedResponse',
           handler: (event) => {
-            const message = event.data;
-            console.log('Received message:', message);
+            const { message, fullMessage } = event.data;
+            console.log('Received userDefinedResponse:', message);
 
-            // Check if the response contains a loan amount
-            if (message.output?.generic?.[0]?.user_defined?.user_defined_type === 'fill_loan_amount') {
+            // Check if this is our loan amount response
+            if (message.user_defined?.user_defined_type === 'fill_loan_amount') {
               console.log('Found fill_loan_amount response');
-              const loanAmount = message.context?.skills?.['actions skill']?.skill_variables?.loan_amount;
+              const loanAmount = fullMessage.context?.skills?.['actions skill']?.skill_variables?.loan_amount;
               console.log('Loan amount from context:', loanAmount);
 
               if (loanAmount) {
@@ -84,6 +84,14 @@
                 console.error('No loan amount found in context');
               }
             }
+          }
+        });
+
+        // Add event listener for receive to log all messages
+        instance.on({
+          type: 'receive',
+          handler: (event) => {
+            console.log('Received message:', event.data);
           }
         });
 
