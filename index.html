@@ -128,11 +128,6 @@
      * This is the function that is called when the web chat code has been loaded and ready to render
      */
     async function onLoad(instance) {
-      // Enable verbose logging to see what's happening
-      instance.updateChatSettings({
-        debug: true
-      });
-
       // Listen for the receive event to handle messages from the assistant
       instance.on({ type: 'receive', handler: receiveHandler });
 
