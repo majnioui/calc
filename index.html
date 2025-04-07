@@ -110,19 +110,28 @@
      * Cette fonction est appelée lorsque le chat web est chargé et prêt à être rendu.
      */
     async function onLoad(instance) {
-      // Écoute l'événement userDefinedResponse
-      instance.on({
-        type: 'userDefinedResponse',
-        handler: userDefinedResponseHandler
-      });
+      try {
+        // Écoute l'événement userDefinedResponse
+        instance.on({
+          type: 'userDefinedResponse',
+          handler: userDefinedResponseHandler
+        });
 
-      // Écoute l'événement receive
-      instance.on({
-        type: 'receive',
-        handler: receiveHandler
-      });
+        // Écoute l'événement receive
+        instance.on({
+          type: 'receive',
+          handler: receiveHandler
+        });
 
-      await instance.render();
+        // Désactive les analytics pour éviter les erreurs de blocage
+        instance.updateCSSVariables({
+          '--ibm-analytics-enabled': 'false'
+        });
+
+        await instance.render();
+      } catch (error) {
+        console.error('Erreur lors du chargement du chat:', error);
+      }
     }
 
     // Configuration du chat web
@@ -132,7 +141,12 @@
       serviceInstanceID: "02cff0bf-6880-413a-a103-7e26e50ff214",
       debug: true,
       onLoad: onLoad,
+      analytics: {
+        enabled: false
+      }
     };
+
+    // Chargement du script du chat web
     setTimeout(function(){
       const t=document.createElement('script');
       t.src="https://web-chat.global.assistant.watson.appdomain.cloud/versions/" +
