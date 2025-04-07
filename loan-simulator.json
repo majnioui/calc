@@ -1,0 +1,270 @@
+{
+  "name": "Simulateur de Prêt",
+  "type": "action",
+  "valid": true,
+  "status": "Available",
+  "created": "2023-07-15T10:00:00.000Z",
+  "updated": "2023-07-15T10:00:00.000Z",
+  "language": "fr",
+  "skill_id": "loan-simulator-skill-id",
+  "workspace": {
+    "actions": [
+      {
+        "type": "standard",
+        "steps": [
+          {
+            "step": "step_001",
+            "output": {
+              "generic": [
+                {
+                  "values": [
+                    {
+                      "text_expression": {
+                        "concat": [
+                          {
+                            "scalar": "Bonjour ! Bienvenue sur notre simulateur de prêt."
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "response_type": "text",
+                  "selection_policy": "sequential"
+                }
+              ]
+            },
+            "handlers": [],
+            "resolver": {
+              "type": "end_action"
+            },
+            "variable": "step_001"
+          }
+        ],
+        "title": "Accueil",
+        "action": "welcome",
+        "boosts": [],
+        "handlers": [],
+        "condition": {
+          "expression": "welcome"
+        },
+        "variables": [
+          {
+            "title": "Bonjour",
+            "variable": "step_001",
+            "data_type": "any"
+          }
+        ],
+        "next_action": "action_loan_simulator",
+        "disambiguation_opt_out": true
+      },
+      {
+        "type": "standard",
+        "steps": [
+          {
+            "step": "step_001",
+            "output": {
+              "generic": [
+                {
+                  "values": [
+                    {
+                      "text_expression": {
+                        "concat": [
+                          {
+                            "scalar": "Veuillez entrer le montant du prêt souhaité (en euros)."
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "response_type": "text",
+                  "selection_policy": "sequential",
+                  "repeat_on_reprompt": false
+                }
+              ]
+            },
+            "handlers": [],
+            "question": {
+              "free_text": true
+            },
+            "resolver": {
+              "type": "continue"
+            },
+            "variable": "step_001",
+            "next_step": "step_002"
+          },
+          {
+            "step": "step_002",
+            "output": {
+              "generic": [
+                {
+                  "values": [
+                    {
+                      "text_expression": {
+                        "concat": [
+                          {
+                            "scalar": "J'ai rempli automatiquement le champ du montant du prêt avec la valeur "
+                          },
+                          {
+                            "variable": "step_001"
+                          },
+                          {
+                            "scalar": " euros. Vous pouvez maintenant cliquer sur le bouton 'Calculer' pour voir les résultats."
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "user_defined": {
+                    "user_defined_type": "fill_loan_amount",
+                    "amount": "<? $step_001 ?>"
+                  },
+                  "response_type": "text",
+                  "selection_policy": "sequential"
+                }
+              ]
+            },
+            "handlers": [],
+            "resolver": {
+              "type": "end_action"
+            },
+            "variable": "step_002"
+          }
+        ],
+        "title": "Simulateur de prêt",
+        "action": "action_loan_simulator",
+        "boosts": [],
+        "handlers": [],
+        "condition": {
+          "intent": "intent_loan_simulator"
+        },
+        "variables": [
+          {
+            "title": "Montant du prêt",
+            "privacy": {
+              "enabled": false
+            },
+            "variable": "step_001",
+            "data_type": "any"
+          },
+          {
+            "title": "Confirmation montant",
+            "privacy": {
+              "enabled": false
+            },
+            "variable": "step_002",
+            "data_type": "any"
+          },
+          {
+            "title": "Montant du prêt",
+            "variable": "loan_amount",
+            "data_type": "number"
+          }
+        ],
+        "next_action": "anything_else",
+        "disambiguation_opt_out": false
+      },
+      {
+        "type": "standard",
+        "steps": [
+          {
+            "step": "step_001",
+            "output": {
+              "generic": [
+                {
+                  "values": [
+                    {
+                      "text": "Je ne comprends pas votre demande. Veuillez reformuler ou demander le 'simulateur de prêt'."
+                    }
+                  ],
+                  "response_type": "text",
+                  "selection_policy": "sequential"
+                }
+              ]
+            },
+            "handlers": [],
+            "resolver": {
+              "type": "end_action"
+            },
+            "variable": "step_001"
+          }
+        ],
+        "title": "Autre",
+        "action": "anything_else",
+        "boosts": [],
+        "handlers": [],
+        "condition": {
+          "expression": "anything_else"
+        },
+        "variables": [
+          {
+            "title": "Je ne comprends pas",
+            "variable": "step_001",
+            "data_type": "any"
+          }
+        ],
+        "disambiguation_opt_out": true
+      }
+    ],
+    "intents": [
+      {
+        "intent": "intent_loan_simulator",
+        "examples": [
+          {
+            "text": "simulateur de prêt"
+          },
+          {
+            "text": "calculer mon prêt"
+          },
+          {
+            "text": "je veux un prêt"
+          },
+          {
+            "text": "simulateur de crédit"
+          },
+          {
+            "text": "calculer ma mensualité"
+          },
+          {
+            "text": "simulation de prêt"
+          },
+          {
+            "text": "prêt immobilier"
+          },
+          {
+            "text": "prêt auto"
+          },
+          {
+            "text": "prêt personnel"
+          }
+        ]
+      }
+    ],
+    "entities": [],
+    "metadata": {
+      "api_version": {
+        "major_version": "v2",
+        "minor_version": "2018-11-08"
+      }
+    },
+    "variables": [],
+    "data_types": [],
+    "counterexamples": [],
+    "system_settings": {
+      "disambiguation": {
+        "prompt": "Vouliez-vous dire:",
+        "enabled": true,
+        "randomize": true,
+        "max_suggestions": 5,
+        "suggestion_text_policy": "title",
+        "none_of_the_above_prompt": "Aucune de ces options"
+      },
+      "spelling_auto_correct": true
+    },
+    "learning_opt_out": false
+  },
+  "description": "Simulateur de prêt interactif",
+  "assistant_id": "assistant-id",
+  "workspace_id": "workspace-id",
+  "dialog_settings": {},
+  "next_snapshot_version": "1"
+}
