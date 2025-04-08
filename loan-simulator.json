@@ -13,6 +13,54 @@
         "type": "standard",
         "steps": [
           {
+            "step": "step_001",
+            "output": {
+              "generic": [
+                {
+                  "values": [
+                    {
+                      "text_expression": {
+                        "concat": [
+                          {
+                            "scalar": "Bonjour ! Bienvenue sur notre simulateur de prêt."
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "response_type": "text",
+                  "selection_policy": "sequential"
+                }
+              ]
+            },
+            "handlers": [],
+            "resolver": {
+              "type": "end_action"
+            },
+            "variable": "step_001"
+          }
+        ],
+        "title": "Accueil",
+        "action": "welcome",
+        "boosts": [],
+        "handlers": [],
+        "condition": {
+          "expression": "welcome"
+        },
+        "variables": [
+          {
+            "title": "Bonjour",
+            "variable": "step_001",
+            "data_type": "any"
+          }
+        ],
+        "next_action": "action_loan_simulator",
+        "disambiguation_opt_out": true
+      },
+      {
+        "type": "standard",
+        "steps": [
+          {
             "step": "step_925",
             "output": {
               "generic": [
@@ -396,6 +444,105 @@
             "data_type": "any"
           }
         ],
+        "next_action": "find_nearest_agency",
+        "disambiguation_opt_out": false
+      },
+      {
+        "type": "standard",
+        "steps": [
+          {
+            "step": "step_011",
+            "output": {
+              "generic": [
+                {
+                  "values": [
+                    {
+                      "text_expression": {
+                        "concat": [
+                          {
+                            "scalar": "Veuillez partager votre localisation pour trouver l'agence Wafasalaf la plus proche."
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "response_type": "text",
+                  "selection_policy": "sequential"
+                },
+                {
+                  "user_defined": {
+                    "user_defined_type": "share_location"
+                  },
+                  "response_type": "user_defined"
+                }
+              ]
+            },
+            "handlers": [],
+            "question": {
+              "free_text": true
+            },
+            "resolver": {
+              "type": "continue"
+            },
+            "variable": "step_011",
+            "next_step": "step_012"
+          },
+          {
+            "step": "step_012",
+            "output": {
+              "generic": [
+                {
+                  "values": [
+                    {
+                      "text_expression": {
+                        "concat": [
+                          {
+                            "scalar": "Voici l'agence Wafasalaf la plus proche de votre position."
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "response_type": "text",
+                  "selection_policy": "sequential"
+                },
+                {
+                  "title": "Agence Wafasalaf",
+                  "source": "https://www.google.com/maps/embed/v1/search?key=YOUR_GOOGLE_MAPS_API_KEY&q=Wafasalaf+agence&center=${User_Latitude},${User_Longitude}&zoom=13",
+                  "description": "Agence Wafasalaf la plus proche",
+                  "user_defined": {
+                    "user_defined_type": "google_map"
+                  },
+                  "response_type": "iframe"
+                }
+              ]
+            },
+            "handlers": [],
+            "resolver": {
+              "type": "end_action"
+            },
+            "variable": "step_012"
+          }
+        ],
+        "title": "Où se trouve l'agence Wafasalaf la plus proche ?",
+        "action": "find_nearest_agency",
+        "boosts": [],
+        "handlers": [],
+        "condition": {
+          "intent": "find_nearest_agency_intent"
+        },
+        "variables": [
+          {
+            "title": "Veuillez partager votre localisation",
+            "variable": "step_011",
+            "data_type": "any"
+          },
+          {
+            "title": "Voici l'agence Wafasalaf la plus proche",
+            "variable": "step_012",
+            "data_type": "any"
+          }
+        ],
         "next_action": "anything_else",
         "disambiguation_opt_out": false
       },
@@ -439,54 +586,6 @@
           }
         ],
         "disambiguation_opt_out": true
-      },
-      {
-        "type": "standard",
-        "steps": [
-          {
-            "step": "step_001",
-            "output": {
-              "generic": [
-                {
-                  "values": [
-                    {
-                      "text_expression": {
-                        "concat": [
-                          {
-                            "scalar": "Bonjour ! Bienvenue sur notre simulateur de prêt."
-                          }
-                        ]
-                      }
-                    }
-                  ],
-                  "response_type": "text",
-                  "selection_policy": "sequential"
-                }
-              ]
-            },
-            "handlers": [],
-            "resolver": {
-              "type": "end_action"
-            },
-            "variable": "step_001"
-          }
-        ],
-        "title": "Accueil",
-        "action": "welcome",
-        "boosts": [],
-        "handlers": [],
-        "condition": {
-          "expression": "welcome"
-        },
-        "variables": [
-          {
-            "title": "Bonjour",
-            "variable": "step_001",
-            "data_type": "any"
-          }
-        ],
-        "next_action": "action_loan_simulator",
-        "disambiguation_opt_out": true
       }
     ],
     "intents": [
@@ -510,6 +609,26 @@
           },
           {
             "text": "simulation de prêt"
+          }
+        ]
+      },
+      {
+        "intent": "find_nearest_agency_intent",
+        "examples": [
+          {
+            "text": "Où se trouve l'agence Wafasalaf la plus proche ?"
+          },
+          {
+            "text": "Trouvez-moi une agence Wafasalaf"
+          },
+          {
+            "text": "Je cherche une agence Wafasalaf"
+          },
+          {
+            "text": "Localisation agence Wafasalaf"
+          },
+          {
+            "text": "Agence Wafasalaf près de moi"
           }
         ]
       }
@@ -584,7 +703,20 @@
         "minor_version": "2018-11-08"
       }
     },
-    "variables": [],
+    "variables": [
+      {
+        "title": "Latitude utilisateur",
+        "variable": "User_Latitude",
+        "data_type": "any",
+        "description": "Latitude de l'utilisateur"
+      },
+      {
+        "title": "Longitude utilisateur",
+        "variable": "User_Longitude",
+        "data_type": "any",
+        "description": "Longitude de l'utilisateur"
+      }
+    ],
     "data_types": [],
     "collections": [],
     "counterexamples": [],
