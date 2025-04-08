@@ -60,38 +60,80 @@ function receiveHandler(event) {
   }
 
   const generic = event.data.output.generic;
+  console.log('Processing receive event:', generic);
 
   for (let i = 0; i < generic.length; i++) {
-    // Check if this response has user_defined data
-    if (generic[i].user_defined && generic[i].user_defined.user_defined_type === "fill_loan_amount") {
-      let amount = generic[i].user_defined.amount;
+    const message = generic[i];
+    console.log('Processing message:', message);
 
-      // Extract the number from the text if needed
-      if (typeof amount === 'string' && amount.includes("$step_001")) {
-        // Try to get the amount from the text property instead
-        const text = generic[i].text || "";
-        const matches = text.match(/avec la valeur (\d+)/);
-        if (matches && matches.length > 1) {
-          amount = matches[1];
+    // Handle loan duration
+    if (message.text && message.text.includes("Durée (en mois)")) {
+      console.log('Detected duration message');
+      const matches = message.text.match(/avec la valeur (\d+)/);
+      if (matches && matches.length > 1) {
+        const duration = matches[1];
+        console.log('Setting duration:', duration);
+        const loanDurationInput = document.getElementById('loan-duration');
+        if (loanDurationInput) {
+          loanDurationInput.value = duration;
+          highlightElement(loanDurationInput, 'highlight');
         }
       }
+    }
 
-      // Get the loan amount input element
-      const loanAmountInput = document.getElementById('loan-amount');
-      const calculateBtn = document.getElementById('calculate-btn');
+    // Also handle user_defined in receive event
+    if (message.user_defined) {
+      const type = message.user_defined.user_defined_type;
+      console.log('Processing user_defined in receive:', type);
 
-      loanAmountInput.value = amount;
+      if (type === 'fill_all_fields') {
+        console.log('Processing all fields in receive:', message.user_defined);
 
-      // Apply the highlight animation to the input
-      highlightElement(loanAmountInput, 'highlight');
+        // Handle loan amount
+        let amount = message.user_defined.amount;
+        console.log('Setting loan amount in receive:', amount);
 
-      // Scroll to the input field to ensure it's visible
-      scrollToElement(loanAmountInput);
+        if (typeof amount === 'string' && amount.includes("$step_001")) {
+          const text = message.text || "";
+          const matches = text.match(/avec la valeur (\d+)/);
+          if (matches && matches.length > 1) {
+            amount = matches[1];
+          }
+        }
 
-      // After a short delay, highlight the calculate button
-      setTimeout(() => {
-        highlightElement(calculateBtn, 'pulse');
-      }, 1000);
+        const loanAmountInput = document.getElementById('loan-amount');
+        const calculateBtn = document.getElementById('calculate-btn');
+
+        if (loanAmountInput) {
+          loanAmountInput.value = amount;
+          highlightElement(loanAmountInput, 'highlight');
+          scrollToElement(loanAmountInput);
+
+          if (calculateBtn) {
+            setTimeout(() => {
+              highlightElement(calculateBtn, 'pulse');
+            }, 1000);
+          }
+        }
+
+        // Handle project type
+        const projectType = message.user_defined.project_type;
+        console.log('Setting project type in receive:', projectType);
+        const projectTypeSelect = document.getElementById('project-type');
+        if (projectTypeSelect && projectType) {
+          projectTypeSelect.value = projectType;
+          highlightElement(projectTypeSelect, 'highlight');
+        }
+
+        // Handle profession
+        const profession = message.user_defined.profession;
+        console.log('Setting profession in receive:', profession);
+        const professionSelect = document.getElementById('profession');
+        if (professionSelect && profession) {
+          professionSelect.value = profession;
+          highlightElement(professionSelect, 'highlight');
+        }
+      }
     }
   }
 }
@@ -103,7 +145,69 @@ async function onLoad(instance) {
   // Listen for the receive event to handle messages from the assistant
   instance.on({ type: 'receive', handler: receiveHandler });
 
+  // Listen for userDefinedResponse events
+  instance.on({ type: 'userDefinedResponse', handler: userDefinedHandler });
+
   await instance.render();
+}
+
+function userDefinedHandler(event) {
+  const { message } = event.data;
+  console.log('Processing userDefinedResponse:', message);
+
+  if (message.user_defined) {
+    const type = message.user_defined.user_defined_type;
+    console.log('Processing user_defined type:', type);
+
+    if (type === 'fill_all_fields') {
+      console.log('Processing all fields:', message.user_defined);
+
+      // Handle loan amount
+      let amount = message.user_defined.amount;
+      console.log('Setting loan amount:', amount);
+
+      if (typeof amount === 'string' && amount.includes("$step_001")) {
+        const text = message.text || "";
+        const matches = text.match(/avec la valeur (\d+)/);
+        if (matches && matches.length > 1) {
+          amount = matches[1];
+        }
+      }
+
+      const loanAmountInput = document.getElementById('loan-amount');
+      const calculateBtn = document.getElementById('calculate-btn');
+
+      if (loanAmountInput) {
+        loanAmountInput.value = amount;
+        highlightElement(loanAmountInput, 'highlight');
+        scrollToElement(loanAmountInput);
+
+        if (calculateBtn) {
+          setTimeout(() => {
+            highlightElement(calculateBtn, 'pulse');
+          }, 1000);
+        }
+      }
+
+      // Handle project type
+      const projectType = message.user_defined.project_type;
+      console.log('Setting project type:', projectType);
+      const projectTypeSelect = document.getElementById('project-type');
+      if (projectTypeSelect && projectType) {
+        projectTypeSelect.value = projectType;
+        highlightElement(projectTypeSelect, 'highlight');
+      }
+
+      // Handle profession
+      const profession = message.user_defined.profession;
+      console.log('Setting profession:', profession);
+      const professionSelect = document.getElementById('profession');
+      if (professionSelect && profession) {
+        professionSelect.value = profession;
+        highlightElement(professionSelect, 'highlight');
+      }
+    }
+  }
 }
 
 // Initialize Watson Assistant when the page loads

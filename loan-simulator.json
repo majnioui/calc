@@ -1,14 +1,444 @@
 {
-  "name": "Simulateur de Prêt",
+  "name": "Wafasalaf - Mo - Test-action",
   "type": "action",
   "valid": true,
   "status": "Available",
-  "created": "2023-07-15T10:00:00.000Z",
-  "updated": "2023-07-15T10:00:00.000Z",
+  "created": "2025-04-07T10:47:41.750Z",
+  "updated": "2025-04-08T10:24:08.123Z",
   "language": "fr",
-  "skill_id": "loan-simulator-skill-id",
+  "skill_id": "d69b021e-1d61-468c-864b-8f8afe311537",
   "workspace": {
     "actions": [
+      {
+        "type": "standard",
+        "steps": [
+          {
+            "step": "step_925",
+            "output": {
+              "generic": [
+                {
+                  "values": [
+                    {
+                      "text_expression": {
+                        "concat": [
+                          {
+                            "scalar": "Bonjour, Merci de spécifier le type de votre projet"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "response_type": "text",
+                  "selection_policy": "sequential",
+                  "repeat_on_reprompt": false
+                },
+                {
+                  "options": [
+                    {
+                      "label": "J'ai besoin d'argent",
+                      "value": {
+                        "input": {
+                          "text": "J'ai besoin d'argent"
+                        }
+                      }
+                    },
+                    {
+                      "label": "Je finance ma véhicule d'occasion",
+                      "value": {
+                        "input": {
+                          "text": "Je finance ma véhicule d'occasion"
+                        }
+                      }
+                    },
+                    {
+                      "label": "Je gère mes imprévus",
+                      "value": {
+                        "input": {
+                          "text": "Je gère mes imprévus"
+                        }
+                      }
+                    },
+                    {
+                      "label": "Je finance ma véhicule neuf",
+                      "value": {
+                        "input": {
+                          "text": "Je finance ma véhicule neuf"
+                        }
+                      }
+                    },
+                    {
+                      "label": "J'équipe ma maison",
+                      "value": {
+                        "input": {
+                          "text": "J'équipe ma maison"
+                        }
+                      }
+                    }
+                  ],
+                  "response_type": "option",
+                  "repeat_on_reprompt": true
+                }
+              ]
+            },
+            "handlers": [
+              {
+                "type": "not_found",
+                "title": "validation_not_found_handler",
+                "output": {
+                  "generic": [
+                    {
+                      "values": [
+                        {
+                          "text_expression": {
+                            "concat": [
+                              {
+                                "scalar": "Je n'ai pas compris. Sélectionnez une option valide :"
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "response_type": "text",
+                      "selection_policy": "incremental"
+                    }
+                  ]
+                },
+                "handler": "validation_not_found_handler",
+                "resolver": {
+                  "type": "prompt_again"
+                },
+                "next_handler": "validation_not_found_max_tries_handler"
+              },
+              {
+                "type": "not_found_max_tries",
+                "title": "validation_not_found_max_tries_handler",
+                "handler": "validation_not_found_max_tries_handler",
+                "resolver": {
+                  "type": "fallback"
+                }
+              }
+            ],
+            "question": {
+              "entity": "entity_25122",
+              "max_tries": 3
+            },
+            "resolver": {
+              "type": "continue"
+            },
+            "variable": "step_925",
+            "next_step": "step_443"
+          },
+          {
+            "step": "step_443",
+            "output": {
+              "generic": [
+                {
+                  "values": [
+                    {
+                      "text_expression": {
+                        "concat": [
+                          {
+                            "scalar": "Veuillez entrer votre profession"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "response_type": "text",
+                  "selection_policy": "sequential",
+                  "repeat_on_reprompt": false
+                },
+                {
+                  "options": [
+                    {
+                      "label": "Salarié du secteur privé",
+                      "value": {
+                        "input": {
+                          "text": "Salarié du secteur privé"
+                        }
+                      }
+                    },
+                    {
+                      "label": "Fonctionnaire",
+                      "value": {
+                        "input": {
+                          "text": "Fonctionnaire"
+                        }
+                      }
+                    },
+                    {
+                      "label": "Profession libérale",
+                      "value": {
+                        "input": {
+                          "text": "Profession libérale"
+                        }
+                      }
+                    },
+                    {
+                      "label": "Commerçant",
+                      "value": {
+                        "input": {
+                          "text": "Commerçant"
+                        }
+                      }
+                    },
+                    {
+                      "label": "Autre",
+                      "value": {
+                        "input": {
+                          "text": "Autre"
+                        }
+                      }
+                    }
+                  ],
+                  "response_type": "option",
+                  "repeat_on_reprompt": true
+                }
+              ]
+            },
+            "handlers": [
+              {
+                "type": "not_found",
+                "title": "validation_not_found_handler",
+                "output": {
+                  "generic": [
+                    {
+                      "values": [
+                        {
+                          "text_expression": {
+                            "concat": [
+                              {
+                                "scalar": "Je n'ai pas compris. Sélectionnez une option valide :"
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "response_type": "text",
+                      "selection_policy": "incremental"
+                    }
+                  ]
+                },
+                "handler": "validation_not_found_handler",
+                "resolver": {
+                  "type": "prompt_again"
+                },
+                "next_handler": "validation_not_found_max_tries_handler"
+              },
+              {
+                "type": "not_found_max_tries",
+                "title": "validation_not_found_max_tries_handler",
+                "handler": "validation_not_found_max_tries_handler",
+                "resolver": {
+                  "type": "fallback"
+                }
+              }
+            ],
+            "question": {
+              "entity": "entity_29966",
+              "max_tries": 3
+            },
+            "resolver": {
+              "type": "continue"
+            },
+            "variable": "step_443",
+            "next_step": "step_001"
+          },
+          {
+            "step": "step_001",
+            "output": {
+              "generic": [
+                {
+                  "values": [
+                    {
+                      "text_expression": {
+                        "concat": [
+                          {
+                            "scalar": "Veuillez entrer le montant du prêt souhaité (en DH)."
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "response_type": "text",
+                  "selection_policy": "sequential",
+                  "repeat_on_reprompt": false
+                }
+              ]
+            },
+            "handlers": [],
+            "question": {
+              "free_text": true
+            },
+            "resolver": {
+              "type": "continue"
+            },
+            "variable": "step_001",
+            "next_step": "step_420"
+          },
+          {
+            "step": "step_420",
+            "output": {
+              "generic": [
+                {
+                  "values": [
+                    {
+                      "text_expression": {
+                        "concat": [
+                          {
+                            "scalar": "Merci de spécifier la Durée (en mois)."
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "response_type": "text",
+                  "selection_policy": "sequential"
+                }
+              ]
+            },
+            "handlers": [],
+            "question": {
+              "free_text": true
+            },
+            "resolver": {
+              "type": "continue"
+            },
+            "variable": "step_420",
+            "next_step": "step_002"
+          },
+          {
+            "step": "step_002",
+            "output": {
+              "generic": [
+                {
+                  "values": [
+                    {
+                      "text_expression": {
+                        "concat": [
+                          {
+                            "scalar": "J'ai rempli automatiquement les champs du simulateur pour vous. Vous pouvez maintenant cliquer sur le bouton '**Simuler mes mensualités**' pour voir les résultats."
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "user_defined": {
+                    "amount": "<? $step_001 ?>",
+                    "project_type": "<? $step_925 ?>",
+                    "profession": "<? $step_443 ?>",
+                    "user_defined_type": "fill_all_fields"
+                  },
+                  "response_type": "text",
+                  "selection_policy": "sequential"
+                }
+              ]
+            },
+            "handlers": [],
+            "resolver": {
+              "type": "end_action"
+            },
+            "variable": "step_002"
+          }
+        ],
+        "title": "Simulateur de prêt",
+        "action": "action_loan_simulator",
+        "boosts": [],
+        "handlers": [],
+        "condition": {
+          "intent": "intent_loan_simulator"
+        },
+        "variables": [
+          {
+            "title": "Montant du prêt",
+            "variable": "loan_amount",
+            "data_type": "number"
+          },
+          {
+            "title": "Veuillez entrer le montant du prêt souhaité (en DH).",
+            "privacy": {
+              "enabled": false
+            },
+            "variable": "step_001",
+            "data_type": "any"
+          },
+          {
+            "title": "J'ai rempli automatiquement les champs du simulateur pour vous. ",
+            "privacy": {
+              "enabled": false
+            },
+            "variable": "step_002",
+            "data_type": "any"
+          },
+          {
+            "title": "Merci de spécifier la Durée (en mois).",
+            "privacy": {
+              "enabled": false
+            },
+            "variable": "step_420",
+            "data_type": "any"
+          },
+          {
+            "title": "Veuillez entrer votre profession",
+            "privacy": {
+              "enabled": false
+            },
+            "variable": "step_443",
+            "data_type": "any"
+          },
+          {
+            "title": "Bonjour, Merci de spécifier le type de votre projet",
+            "privacy": {
+              "enabled": false
+            },
+            "variable": "step_925",
+            "data_type": "any"
+          }
+        ],
+        "next_action": "anything_else",
+        "disambiguation_opt_out": false
+      },
+      {
+        "type": "standard",
+        "steps": [
+          {
+            "step": "step_001",
+            "output": {
+              "generic": [
+                {
+                  "values": [
+                    {
+                      "text": "Je ne comprends pas votre demande. Veuillez reformuler ou demander le 'simulateur de prêt'."
+                    }
+                  ],
+                  "response_type": "text",
+                  "selection_policy": "sequential"
+                }
+              ]
+            },
+            "handlers": [],
+            "resolver": {
+              "type": "end_action"
+            },
+            "variable": "step_001"
+          }
+        ],
+        "title": "Autre",
+        "action": "anything_else",
+        "boosts": [],
+        "handlers": [],
+        "condition": {
+          "expression": "anything_else"
+        },
+        "variables": [
+          {
+            "title": "Je ne comprends pas",
+            "variable": "step_001",
+            "data_type": "any"
+          }
+        ],
+        "disambiguation_opt_out": true
+      },
       {
         "type": "standard",
         "steps": [
@@ -56,153 +486,6 @@
         ],
         "next_action": "action_loan_simulator",
         "disambiguation_opt_out": true
-      },
-      {
-        "type": "standard",
-        "steps": [
-          {
-            "step": "step_001",
-            "output": {
-              "generic": [
-                {
-                  "values": [
-                    {
-                      "text_expression": {
-                        "concat": [
-                          {
-                            "scalar": "Veuillez entrer le montant du prêt souhaité (en euros)."
-                          }
-                        ]
-                      }
-                    }
-                  ],
-                  "response_type": "text",
-                  "selection_policy": "sequential",
-                  "repeat_on_reprompt": false
-                }
-              ]
-            },
-            "handlers": [],
-            "question": {
-              "free_text": true
-            },
-            "resolver": {
-              "type": "continue"
-            },
-            "variable": "step_001",
-            "next_step": "step_002"
-          },
-          {
-            "step": "step_002",
-            "output": {
-              "generic": [
-                {
-                  "values": [
-                    {
-                      "text_expression": {
-                        "concat": [
-                          {
-                            "scalar": "J'ai rempli automatiquement le champ du montant du prêt avec la valeur "
-                          },
-                          {
-                            "variable": "step_001"
-                          },
-                          {
-                            "scalar": " euros. Vous pouvez maintenant cliquer sur le bouton 'Calculer' pour voir les résultats."
-                          }
-                        ]
-                      }
-                    }
-                  ],
-                  "user_defined": {
-                    "user_defined_type": "fill_loan_amount",
-                    "amount": "<? $step_001 ?>"
-                  },
-                  "response_type": "text",
-                  "selection_policy": "sequential"
-                }
-              ]
-            },
-            "handlers": [],
-            "resolver": {
-              "type": "end_action"
-            },
-            "variable": "step_002"
-          }
-        ],
-        "title": "Simulateur de prêt",
-        "action": "action_loan_simulator",
-        "boosts": [],
-        "handlers": [],
-        "condition": {
-          "intent": "intent_loan_simulator"
-        },
-        "variables": [
-          {
-            "title": "Montant du prêt",
-            "privacy": {
-              "enabled": false
-            },
-            "variable": "step_001",
-            "data_type": "any"
-          },
-          {
-            "title": "Confirmation montant",
-            "privacy": {
-              "enabled": false
-            },
-            "variable": "step_002",
-            "data_type": "any"
-          },
-          {
-            "title": "Montant du prêt",
-            "variable": "loan_amount",
-            "data_type": "number"
-          }
-        ],
-        "next_action": "anything_else",
-        "disambiguation_opt_out": false
-      },
-      {
-        "type": "standard",
-        "steps": [
-          {
-            "step": "step_001",
-            "output": {
-              "generic": [
-                {
-                  "values": [
-                    {
-                      "text": "Je ne comprends pas votre demande. Veuillez reformuler ou demander le 'simulateur de prêt'."
-                    }
-                  ],
-                  "response_type": "text",
-                  "selection_policy": "sequential"
-                }
-              ]
-            },
-            "handlers": [],
-            "resolver": {
-              "type": "end_action"
-            },
-            "variable": "step_001"
-          }
-        ],
-        "title": "Autre",
-        "action": "anything_else",
-        "boosts": [],
-        "handlers": [],
-        "condition": {
-          "expression": "anything_else"
-        },
-        "variables": [
-          {
-            "title": "Je ne comprends pas",
-            "variable": "step_001",
-            "data_type": "any"
-          }
-        ],
-        "disambiguation_opt_out": true
       }
     ],
     "intents": [
@@ -210,36 +493,90 @@
         "intent": "intent_loan_simulator",
         "examples": [
           {
-            "text": "simulateur de prêt"
-          },
-          {
-            "text": "calculer mon prêt"
-          },
-          {
-            "text": "je veux un prêt"
-          },
-          {
-            "text": "simulateur de crédit"
+            "text": "Aidez moi à simuler un crédit"
           },
           {
             "text": "calculer ma mensualité"
           },
           {
+            "text": "calculer mon prêt"
+          },
+          {
+            "text": "simulateur de crédit"
+          },
+          {
+            "text": "simulateur de prêt"
+          },
+          {
             "text": "simulation de prêt"
-          },
-          {
-            "text": "prêt immobilier"
-          },
-          {
-            "text": "prêt auto"
-          },
-          {
-            "text": "prêt personnel"
           }
         ]
       }
     ],
-    "entities": [],
+    "entities": [
+      {
+        "entity": "entity_25122",
+        "values": [
+          {
+            "type": "synonyms",
+            "value": "J'ai besoin d'argent",
+            "synonyms": []
+          },
+          {
+            "type": "synonyms",
+            "value": "Je finance ma véhicule d'occasion",
+            "synonyms": []
+          },
+          {
+            "type": "synonyms",
+            "value": "Je finance ma véhicule neuf",
+            "synonyms": []
+          },
+          {
+            "type": "synonyms",
+            "value": "Je gère mes imprévus",
+            "synonyms": []
+          },
+          {
+            "type": "synonyms",
+            "value": "J'équipe ma maison",
+            "synonyms": []
+          }
+        ],
+        "fuzzy_match": true
+      },
+      {
+        "entity": "entity_29966",
+        "values": [
+          {
+            "type": "synonyms",
+            "value": "Autre",
+            "synonyms": []
+          },
+          {
+            "type": "synonyms",
+            "value": "Commerçant",
+            "synonyms": []
+          },
+          {
+            "type": "synonyms",
+            "value": "Fonctionnaire",
+            "synonyms": []
+          },
+          {
+            "type": "synonyms",
+            "value": "Profession libérale",
+            "synonyms": []
+          },
+          {
+            "type": "synonyms",
+            "value": "Salarié du secteur privé",
+            "synonyms": []
+          }
+        ],
+        "fuzzy_match": true
+      }
+    ],
     "metadata": {
       "api_version": {
         "major_version": "v2",
@@ -248,23 +585,99 @@
     },
     "variables": [],
     "data_types": [],
+    "collections": [],
     "counterexamples": [],
     "system_settings": {
+      "nlp": {
+        "model": "latest"
+      },
+      "variable": {
+        "format": {}
+      },
+      "launch_mode": {
+        "default": "learning",
+        "enabled": false,
+        "learning": {
+          "step_retry_threshold": 2,
+          "use_connect_to_support": "more_often",
+          "single_answer_clarification": "more_often",
+          "disambiguation_clarification": "more_often"
+        },
+        "confident": {
+          "step_retry_threshold": 4,
+          "use_connect_to_support": "sometimes",
+          "single_answer_clarification": "sometimes",
+          "disambiguation_clarification": "sometimes"
+        }
+      },
+      "topic_switch": {
+        "messages": {
+          "enable_confirmation": false,
+          "confirmation_failure": {
+            "generic": [
+              {
+                "values": [
+                  {
+                    "text_expression": {
+                      "concat": [
+                        {
+                          "scalar": "Please reply back with yes or no"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "response_type": "text",
+                "selection_policy": "sequential"
+              }
+            ]
+          },
+          "confirmation_request": {
+            "generic": [
+              {
+                "values": [
+                  {
+                    "text_expression": {
+                      "concat": [
+                        {
+                          "scalar": "Do you want to return to your previous topic "
+                        },
+                        {
+                          "system_variable": "digressed_from"
+                        },
+                        {
+                          "scalar": "?"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "response_type": "text",
+                "selection_policy": "sequential"
+              }
+            ]
+          }
+        },
+        "max_tries": 3
+      },
       "disambiguation": {
         "prompt": "Vouliez-vous dire:",
         "enabled": true,
         "randomize": true,
         "max_suggestions": 5,
         "suggestion_text_policy": "title",
-        "none_of_the_above_prompt": "Aucune de ces options"
+        "none_of_the_above_prompt": "Aucune de ces options",
+        "use_connect_to_support_prompt": "Connect to support",
+        "single_answer_clarification_prompt": "Something else"
       },
       "spelling_auto_correct": true
     },
     "learning_opt_out": false
   },
   "description": "Simulateur de prêt interactif",
-  "assistant_id": "assistant-id",
-  "workspace_id": "workspace-id",
+  "assistant_id": "2817d3d0-c188-411c-ad38-4a07463eb4f8",
+  "workspace_id": "d69b021e-1d61-468c-864b-8f8afe311537",
   "dialog_settings": {},
-  "next_snapshot_version": "1"
+  "next_snapshot_version": "1",
+  "environment_id": "eefd188d-1606-4917-adf0-4870b067af55"
 }

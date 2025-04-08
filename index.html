@@ -59,6 +59,34 @@
             <input id="interest-rate" type="number" step="0.01" placeholder="Entrez le taux d'intérêt" value="3.5">
           </div>
 
+          <div class="form-group">
+            <label for="project-type">Type de projet</label>
+            <select id="project-type" name="project-type">
+              <option value="">Sélectionnez un type de projet</option>
+              <option value="J'ai besoin d'argent">J'ai besoin d'argent</option>
+              <option value="Je finance ma véhicule d'occasion">Je finance ma véhicule d'occasion</option>
+              <option value="Je gère mes imprévus">Je gère mes imprévus</option>
+              <option value="Je finance ma véhicule neuf">Je finance ma véhicule neuf</option>
+              <option value="J'équipe ma maison">J'équipe ma maison</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="profession">Profession</label>
+            <select id="profession" name="profession">
+              <option value="">Sélectionnez votre profession</option>
+              <option value="Salarié du secteur privé">Salarié du secteur privé</option>
+              <option value="Fonctionnaire">Fonctionnaire</option>
+              <option value="Commerçant">Commerçant</option>
+              <option value="Profession libérale">Profession libérale</option>
+              <option value="Retraité">Retraité</option>
+            </select>
+          </div>
+
+          <!-- Hidden inputs for storing additional data -->
+          <input type="hidden" id="project-type" name="project-type">
+          <input type="hidden" id="profession" name="profession">
+
           <button id="calculate-btn" onclick="calculateLoan()">Simuler mes mensualités</button>
 
           <div id="result" class="result">
