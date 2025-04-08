@@ -4,16 +4,16 @@
 function calculateLoan() {
   const amount = parseFloat(document.getElementById('loan-amount').value);
   const duration = parseFloat(document.getElementById('loan-duration').value);
-  const rate = parseFloat(document.getElementById('interest-rate').value);
+  const rate = 7; // Hardcoded annual interest rate of 7%
 
-  if (!amount || !duration || !rate) {
+  if (!amount || !duration) {
     alert('Veuillez remplir tous les champs');
     return;
   }
 
-  const monthlyRate = rate / 100 / 12;
-  const months = duration * 12;
-  const monthlyPayment = (amount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months));
+  const monthlyRate = rate / 100 / 12; // Convert annual rate to monthly rate
+  const months = duration * 12; // Convert years to months
+  const monthlyPayment = amount * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
   const totalCost = monthlyPayment * months;
 
   document.getElementById('monthly-payment').textContent = monthlyPayment.toFixed(2);
@@ -101,19 +101,36 @@ function receiveHandler(event) {
           }
         }
 
+        // Handle duration
+        let duration = message.user_defined.duration;
+        console.log('Setting duration in receive:', duration);
+        if (typeof duration === 'string' && duration.includes("$step_420")) {
+          const text = message.text || "";
+          const matches = text.match(/avec la valeur (\d+)/);
+          if (matches && matches.length > 1) {
+            duration = matches[1];
+          }
+        }
+
         const loanAmountInput = document.getElementById('loan-amount');
+        const loanDurationInput = document.getElementById('loan-duration');
         const calculateBtn = document.getElementById('calculate-btn');
 
         if (loanAmountInput) {
           loanAmountInput.value = amount;
           highlightElement(loanAmountInput, 'highlight');
           scrollToElement(loanAmountInput);
+        }
 
-          if (calculateBtn) {
-            setTimeout(() => {
-              highlightElement(calculateBtn, 'pulse');
-            }, 1000);
-          }
+        if (loanDurationInput && duration) {
+          loanDurationInput.value = duration;
+          highlightElement(loanDurationInput, 'highlight');
+        }
+
+        if (calculateBtn) {
+          setTimeout(() => {
+            highlightElement(calculateBtn, 'pulse');
+          }, 1000);
         }
 
         // Handle project type
@@ -174,19 +191,36 @@ function userDefinedHandler(event) {
         }
       }
 
+      // Handle duration
+      let duration = message.user_defined.duration;
+      console.log('Setting duration:', duration);
+      if (typeof duration === 'string' && duration.includes("$step_420")) {
+        const text = message.text || "";
+        const matches = text.match(/avec la valeur (\d+)/);
+        if (matches && matches.length > 1) {
+          duration = matches[1];
+        }
+      }
+
       const loanAmountInput = document.getElementById('loan-amount');
+      const loanDurationInput = document.getElementById('loan-duration');
       const calculateBtn = document.getElementById('calculate-btn');
 
       if (loanAmountInput) {
         loanAmountInput.value = amount;
         highlightElement(loanAmountInput, 'highlight');
         scrollToElement(loanAmountInput);
+      }
 
-        if (calculateBtn) {
-          setTimeout(() => {
-            highlightElement(calculateBtn, 'pulse');
-          }, 1000);
-        }
+      if (loanDurationInput && duration) {
+        loanDurationInput.value = duration;
+        highlightElement(loanDurationInput, 'highlight');
+      }
+
+      if (calculateBtn) {
+        setTimeout(() => {
+          highlightElement(calculateBtn, 'pulse');
+        }, 1000);
       }
 
       // Handle project type

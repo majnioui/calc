@@ -327,6 +327,7 @@
                     "amount": "<? $step_001 ?>",
                     "project_type": "<? $step_925 ?>",
                     "profession": "<? $step_443 ?>",
+                    "duration": "<? $step_420 ?>",
                     "user_defined_type": "fill_all_fields"
                   },
                   "response_type": "text",
