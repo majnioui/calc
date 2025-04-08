@@ -32,6 +32,48 @@ function highlightElement(element, className) {
 }
 
 /**
+ * Takes user location and sends it to the assistant
+ * @param {Object} data - Location data from browser geolocation API
+ * @param {Object} instance - Watson Assistant instance
+ */
+function takeLocation(data, instance) {
+  // Send location data to assistant as context variables
+  instance.send({
+    input: {
+      text: "J'ai partagé ma localisation."
+    },
+    context: {
+      "skills": {
+        "actions skill": {
+          "skill_variables": {
+            "User_Latitude": data.coords.latitude,
+            "User_Longitude": data.coords.longitude,
+          },
+        }
+      }
+    },
+  });
+}
+
+/**
+ * Handles errors when getting user location
+ * @param {Object} error - Error object from geolocation API
+ * @param {Object} instance - Watson Assistant instance
+ */
+function getLocationError(error, instance) {
+  let text = "Une erreur s'est produite lors du partage de ma localisation.";
+
+  // See https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPositionError
+  if (error.code === GeolocationPositionError.PERMISSION_DENIED) {
+    text = "Je ne souhaite pas partager ma localisation pour le moment.";
+  } else if (error.code === GeolocationPositionError.POSITION_UNAVAILABLE) {
+    text = "Le navigateur a rencontré une erreur lors du partage de ma localisation.";
+  }
+
+  instance.send({ input: { text } });
+}
+
+/**
  * Scrolls to an element with smooth animation
  * @param {HTMLElement} element - The element to scroll to
  */
@@ -105,13 +147,27 @@ function calculateLoan() {
 /**
  * Handles messages received from the chatbot
  */
-function receiveHandler(event) {
+function receiveHandler(event, instance) {
   if (!event.data?.output?.generic) return;
 
   const generic = event.data.output.generic;
   for (const message of generic) {
+    // Handle form field filling
     if (message.user_defined?.user_defined_type === 'fill_all_fields') {
       updateFormFields(message.user_defined, message.text);
+    }
+
+    // Handle location sharing request
+    if (message.user_defined?.user_defined_type === 'share_location') {
+      navigator.geolocation.getCurrentPosition(
+        data => takeLocation(data, instance),
+        error => getLocationError(error, instance)
+      );
+    }
+
+    // Handle Google Map display
+    if (message.response_type === 'iframe' && message.user_defined?.user_defined_type === 'google_map') {
+      // If needed, handle map display here
     }
   }
 }
