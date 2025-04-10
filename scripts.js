@@ -37,22 +37,180 @@ function highlightElement(element, className) {
  * @param {Object} instance - Watson Assistant instance
  */
 function takeLocation(data, instance) {
-  // Send location data to assistant as context variables
-  instance.send({
-    input: {
-      text: "J'ai partagé ma localisation."
-    },
-    context: {
-      "skills": {
-        "actions skill": {
-          "skill_variables": {
-            "User_Latitude": data.coords.latitude,
-            "User_Longitude": data.coords.longitude,
-          },
-        }
+  // Get the nearest Wafasalaf location
+  fetchNearestWafasalaf(data.coords.latitude, data.coords.longitude)
+    .then(nearestLocation => {
+      console.log("Sending nearest location to assistant:", nearestLocation);
+
+      // Format origin (user location)
+      const originCoords = `${data.coords.latitude},${data.coords.longitude}`;
+
+      // Format destination (nearest Wafasalaf location)
+      // Use coordinates if available, otherwise use place name
+      const destinationCoords = `${nearestLocation.lat},${nearestLocation.lng}`;
+      const destinationName = nearestLocation.name ? encodeURIComponent(nearestLocation.name) : "CIH Bank";
+
+      // Create a directions URL suitable for an iframe
+      const directionsUrl = `https://www.google.com/maps/embed/v1/directions?key=AIzaSyAd3acpn2pZuAye8gk46LkFkMpPdmBQEFQ&origin=${originCoords}&destination=${destinationCoords}&avoid=tolls`;
+
+      // Send location data to assistant as context variables
+      instance.send({
+        input: {
+          text: `J'ai trouvé l'agence Wafasalaf la plus proche à ${nearestLocation.distance || "quelques"} km.`
+        },
+        context: {
+          "skills": {
+            "actions skill": {
+              "skill_variables": {
+                // User location (origin)
+                "User_Latitude": data.coords.latitude,
+                "User_Longitude": data.coords.longitude,
+
+                // Nearest Wafasalaf location (destination)
+                "Nearest_Bank_Name": nearestLocation.name || "Wafasalaf",
+                "Nearest_Bank_Distance": nearestLocation.distance || "N/A",
+                "Nearest_Bank_Latitude": nearestLocation.lat,
+                "Nearest_Bank_Longitude": nearestLocation.lng,
+
+                // Formatted for directions API
+                "Directions_Origin": originCoords,
+                "Directions_Destination": destinationCoords,
+                "Directions_URL": directionsUrl,
+                "Directions_Destination_Name": destinationName
+              },
+            }
+          }
+        },
+      });
+    })
+    .catch(error => {
+      console.error("Error fetching nearest location:", error);
+      // Fallback to user's location if there's an error
+      const originCoords = `${data.coords.latitude},${data.coords.longitude}`;
+
+      instance.send({
+        input: {
+          text: "Je n'ai pas pu trouver d'agence Wafasalaf à proximité. J'ai partagé ma localisation actuelle."
+        },
+        context: {
+          "skills": {
+            "actions skill": {
+              "skill_variables": {
+                "User_Latitude": data.coords.latitude,
+                "User_Longitude": data.coords.longitude,
+                "Nearest_Bank_Name": "Wafasalaf",
+                "Nearest_Bank_Distance": "N/A",
+                "Directions_Origin": originCoords,
+                "Directions_Destination": "CIH Bank",
+                "Directions_URL": `https://www.google.com/maps/embed/v1/search?key=AIzaSyAd3acpn2pZuAye8gk46LkFkMpPdmBQEFQ&q=Wafasalaf&center=${originCoords}`
+              },
+            }
+          }
+        },
+      });
+    });
+}
+
+/**
+ * Fetches the nearest Wafasalaf location to the user
+ * @param {number} userLat - User's latitude
+ * @param {number} userLng - User's longitude
+ * @returns {Promise<Object>} Promise resolving to location data of nearest location
+ */
+function fetchNearestWafasalaf(userLat, userLng) {
+  // Use absolute URL to our proxy endpoint
+  const serverUrl = 'http://localhost:3000';
+  const proxyUrl = `${serverUrl}/api/places/nearby?lat=${userLat}&lng=${userLng}&radius=10000&keyword=CIH`;
+
+  console.log("Fetching nearest location from:", proxyUrl);
+
+  return fetch(proxyUrl, { mode: 'cors' })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Server responded with status: ${response.status}`);
       }
-    },
+      return response.json();
+    })
+    .then(data => {
+      console.log("Received data:", data);
+      if (data.status === 'OK' && data.results && data.results.length > 0) {
+        // Find the closest location by calculating distance
+        const closest = findClosestLocation(data.results, userLat, userLng);
+        console.log("Closest location:", closest);
+        return closest; // Return the complete location object
+      } else {
+        throw new Error(`No locations found. Status: ${data.status}`);
+      }
+    })
+    .catch(error => {
+      console.error("Fetch error details:", error);
+      throw error;
+    });
+}
+
+/**
+ * Finds the closest location from a list of results
+ * @param {Array} results - Array of location results from Google Places API
+ * @param {number} userLat - User's latitude
+ * @param {number} userLng - User's longitude
+ * @returns {Object} Object with lat and lng of the closest location
+ */
+function findClosestLocation(results, userLat, userLng) {
+  let closestLocation = null;
+  let closestDistance = Infinity;
+
+  results.forEach(location => {
+    const locationLat = location.geometry.location.lat;
+    const locationLng = location.geometry.location.lng;
+
+    // Calculate distance using Haversine formula
+    const distance = calculateDistance(
+      userLat, userLng,
+      locationLat, locationLng
+    );
+
+    if (distance < closestDistance) {
+      closestDistance = distance;
+      closestLocation = {
+        lat: locationLat,
+        lng: locationLng,
+        name: location.name,
+        distance: distance.toFixed(2)
+      };
+    }
   });
+
+  return closestLocation;
+}
+
+/**
+ * Calculates distance between two points using Haversine formula
+ * @param {number} lat1 - Latitude of first point
+ * @param {number} lon1 - Longitude of first point
+ * @param {number} lat2 - Latitude of second point
+ * @param {number} lon2 - Longitude of second point
+ * @returns {number} Distance in kilometers
+ */
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Radius of the earth in km
+  const dLat = deg2rad(lat2 - lat1);
+  const dLon = deg2rad(lon2 - lon1);
+  const a =
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const distance = R * c; // Distance in km
+  return distance;
+}
+
+/**
+ * Converts degrees to radians
+ * @param {number} deg - Degrees
+ * @returns {number} Radians
+ */
+function deg2rad(deg) {
+  return deg * (Math.PI/180);
 }
 
 /**

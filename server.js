@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const axios = require('axios');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -10,6 +11,11 @@ app.use(express.json());
 
 // Serve static files from the current directory
 app.use(express.static(__dirname));
+
+// Add specific route for serving the main page
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // Calculate monthly payment
 function calculateMonthlyPayment(loanAmount, annualInterestRate, loanTerm) {
@@ -54,6 +60,31 @@ app.post('/calculate-payment', (req, res) => {
         res.status(500).json({
             error: 'An error occurred while calculating the payment'
         });
+    }
+});
+
+// Proxy endpoint for Google Places API
+app.get('/api/places/nearby', async (req, res) => {
+    try {
+        const { lat, lng, radius, keyword } = req.query;
+
+        if (!lat || !lng) {
+            return res.status(400).json({ error: 'Missing required parameters: lat, lng' });
+        }
+
+        const response = await axios.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json', {
+            params: {
+                location: `${lat},${lng}`,
+                radius: radius || 20000,
+                keyword: keyword || 'Wafasalaf',
+                key: 'AIzaSyAd3acpn2pZuAye8gk46LkFkMpPdmBQEFQ'
+            }
+        });
+
+        res.json(response.data);
+    } catch (error) {
+        console.error('Google Places API error:', error.message);
+        res.status(500).json({ error: 'Failed to fetch from Google Places API' });
     }
 });
 
