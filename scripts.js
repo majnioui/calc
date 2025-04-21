@@ -118,8 +118,8 @@ function takeLocation(data, instance) {
  * @returns {Promise<Object>} Promise resolving to location data of nearest location
  */
 function fetchNearestWafasalaf(userLat, userLng) {
-  // Use absolute URL to our proxy endpoint
-  const serverUrl = 'https://test.majnioui.me';
+  // Use current domain instead of hardcoded URL
+  const serverUrl = window.location.origin;
   const proxyUrl = `${serverUrl}/api/places/nearby?lat=${userLat}&lng=${userLng}&radius=10000&keyword=CIH`;
 
   console.log("Fetching nearest location from:", proxyUrl);
